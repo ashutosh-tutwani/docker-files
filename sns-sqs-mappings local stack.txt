@@ -1,0 +1,339 @@
+$datachangerollupqueuename = 'data-change-rollup-queue-MT'
+$queueName = 'audit-log-queue-MT'
+$topicName = 'data-change-topic-MT'
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $topicName
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $queueName
+
+$queueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$queueName --attribute-names QueueArn
+$queueArn = $queueArn | ConvertFrom-Json
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$topicName --protocol sqs --notification-endpoint $queueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $datachangerollupqueuename
+$datachangerollupqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$datachangerollupqueuename --attribute-names QueueArn
+$datachangerollupqueueArn = $datachangerollupqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$topicName --protocol sqs --notification-endpoint $datachangerollupqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$metadataqueueName = 'metadata-change-rollup-queue-MT'
+
+$metadatatopicName = 'metadata-change-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $metadatatopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $metadataqueueName
+
+$metadataqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$metadataqueueName --attribute-names QueueArn
+
+$metadataqueueArn = $metadataqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$metadatatopicName --protocol sqs --notification-endpoint $metadataqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+$reindexmetadatachangequeueName = 'reindexer-metadatachange-queue-MT'
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $reindexmetadatachangequeueName
+
+$reindexmetadatachangequeueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$reindexmetadatachangequeueName --attribute-names QueueArn
+
+$reindexmetadatachangequeueArn = $reindexmetadatachangequeueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$metadatatopicName --protocol sqs --notification-endpoint $reindexmetadatachangequeueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$rollupqueueName = 'rollup-field-value-compute-queue-MT'
+
+$rolluptopicName = 'rollup-field-value-compute-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $rolluptopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $rollupqueueName
+
+$rollupqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$rollupqueueName --attribute-names QueueArn
+
+$rollupqueueArn = $rollupqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$rolluptopicName --protocol sqs --notification-endpoint $rollupqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$reindexqueueName = 'reindexer-queue-MT'
+
+$reindextopicName = 'reindexer-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $reindextopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $reindexqueueName
+
+$reindexqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$reindexqueueName --attribute-names QueueArn
+
+$reindexqueueArn = $reindexqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$reindextopicName --protocol sqs --notification-endpoint $reindexqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$reindexondemandqueueName = 'reindexer-ondemand-queue-MT'
+
+$reindexondemandtopicName = 'reindexer-ondemand-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $reindexondemandtopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $reindexondemandqueueName
+
+$reindexondemandqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$reindexondemandqueueName --attribute-names QueueArn
+
+$reindexondemandqueueArn = $reindexondemandqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$reindexondemandtopicName --protocol sqs --notification-endpoint $reindexondemandqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$indexrestorebilderqueueName = 'index-restore-builder-queue-MT'
+
+$reindexrestorebildertopicName = 'index-restore-builder-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $reindexrestorebildertopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $indexrestorebilderqueueName
+
+$indexrestorebilderqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$indexrestorebilderqueueName --attribute-names QueueArn
+
+$indexrestorebilderqueueArn = $indexrestorebilderqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$reindexrestorebildertopicName --protocol sqs --notification-endpoint $indexrestorebilderqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$indexEventStoreQueueName = 'index-eventstore-queue-MT'
+
+$indexEventStoreTopicName = 'index-eventstore-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $indexEventStoreTopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $indexEventStoreQueueName
+
+$indexEventStoreQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$indexEventStoreQueueName --attribute-names QueueArn
+
+$indexEventStoreQueueArn = $indexEventStoreQueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$indexEventStoreTopicName --protocol sqs --notification-endpoint $indexEventStoreQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$indexrestoreprefixcomputeQueueName = 'index-restore-prefix-compute-queue-MT'
+
+$indexrestoreprefixcomputeTopicName = 'index-restore-prefix-compute-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $indexrestoreprefixcomputeTopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $indexrestoreprefixcomputeQueueName
+
+$indexrestoreprefixcomputeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$indexrestoreprefixcomputeQueueName --attribute-names QueueArn
+
+$indexrestoreprefixcomputeQueueArn = $indexrestoreprefixcomputeQueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$indexrestoreprefixcomputeTopicName --protocol sqs --notification-endpoint $indexrestoreprefixcomputeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$indexrestorescannerqueueName = 'index-restore-scanner-queue-MT'
+
+$reindexrestorescannertopicName = 'index-restore-scanner-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $reindexrestorescannertopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $indexrestorescannerqueueName
+
+$indexrestorescannerqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$indexrestorescannerqueueName --attribute-names QueueArn
+
+$indexrestorescannerqueueArn = $indexrestorescannerqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$reindexrestorescannertopicName --protocol sqs --notification-endpoint $indexrestorescannerqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+$jobqueueName = 'job-queue-MT'
+
+$jobtopicName = 'job-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $jobtopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $jobqueueName
+
+$jobqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$jobqueueName --attribute-names QueueArn
+
+$jobqueueArn = $jobqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$jobtopicName --protocol sqs --notification-endpoint $jobqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+$batchqueueName = 'batch-queue-MT'
+
+$batchtopicName = 'batch-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $batchtopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $batchqueueName
+
+$batchqueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$batchqueueName --attribute-names QueueArn
+
+$batchqueueArn = $batchqueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$batchtopicName --protocol sqs --notification-endpoint $batchqueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+$responseConsolidationQueueName = 'response-consolidation-queue-MT'
+
+$responseConsolidationTopicName = 'response-consolidation-topic-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $responseConsolidationTopicName
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $responseConsolidationQueueName
+
+$responseConsolidationQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$responseConsolidationQueueName --attribute-names QueueArn
+
+$responseConsolidationQueueArn = $responseConsolidationQueueArn | ConvertFrom-Json
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$responseConsolidationTopicName --protocol sqs --notification-endpoint $responseConsolidationQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$postOnboardUpgradeQueueName = 'post-onboard-upgrade-queue-MT'
+$postOnboardUpgradeTopicName = 'post-onboard-upgrade-topic-MT' 
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $postOnboardUpgradeTopicName 
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $postOnboardUpgradeQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$postOnboardUpgradeQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$postOnboardUpgradeTopicName --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$email = 'email-inbound-receiver-topic-MT' 
+$emailQueueName = 'inbound-email-processor-queue'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+
+
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json
+ 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$email = 'workflow-runner-topic-MT' 
+$emailQueueName = 'workflow-runner-queue-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+
+
+
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json
+ 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+
+$email = 'dummyapp-preswitch-upgrade-request-topic-MT' 
+$emailQueueName = 'dummyapp-preswitch-upgrade-request-queue-MT'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$email = 'status-aggegator-upgrade-response-topic' 
+$emailQueueName = 'statusaggregator-preswitch-upgrade-response-queue'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+$email = 'orchestrator-response-topic' 
+$emailQueueName = 'test-queue'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+
+$email = 'orchestrator-instruction-topic' 
+$emailQueueName = 'orchestrator-input-queue'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+
+$email = 'orchestrator-instruction-topic' 
+$emailQueueName = 'orchestrator-response-queue'
+
+aws --endpoint-url=http://localhost:4566 sns create-topic --name $email 
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name $emailQueueName 
+
+$postOnboardUpgradeQueueArn = aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://localhost:4566/000000000000/$emailQueueName --attribute-names QueueArn 
+
+$postOnboardUpgradeQueueArn = $postOnboardUpgradeQueueArn | ConvertFrom-Json 
+
+aws --endpoint-url=http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:$email --protocol sqs --notification-endpoint $postOnboardUpgradeQueueArn.Attributes.QueueArn --attributes RawMessageDelivery=true
+
+
+
+
+
+
+
+aws --endpoint-url=http://localhost:4566 sqs purge-queue --queue-url http://localhost:4566/000000000000/test-queue
+
+aws --endpoint-url=http://localhost:4566 sqs get-queue-attributes --queue-url http://127.0.0.1:4566/000000000000/test-queue --attribute-names All
+
+
+aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://127.0.0.1:4566/000000000000/test-queue --attribute-names All --message-attribute-names All
+
+
+aws --endpoint-url=http://localhost:4566 ssm get-parameter --name "rls-plat-dev-3df94d65-6c4e-4947-a98c-915ced9132fd"
